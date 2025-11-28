@@ -2,25 +2,25 @@ Host:
 ```
 Edition	Windows Server 2022 Datacenter
 Version	21H2
-Installed on	‎02.‎10.‎2025
+Installed on	‎28.‎11.‎2025
 OS build	20348.4405
 ```
 
 SQL Server:
 ```
-Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64) 
-	Oct  3 2025 16:55:17 
-	Copyright (C) 2022 Microsoft Corporation
-	Developer Edition (64-bit) on Windows Server 2022 Datacenter 10.0 <X64> (Build 20348: ) (Hypervisor)
+Microsoft SQL Server 2025 (RTM) - 17.0.1000.7 (X64) 
+	Oct 21 2025 12:05:57 
+	Copyright (C) 2025 Microsoft Corporation
+	Standard Developer Edition (64-bit) on Windows Server 2022 Datacenter 10.0 <X64> (Build 20348: ) (Hypervisor)
 ```
 
 
 
 
-	[2025-11-28T22:41:19.6288267+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Information
-	[2025-11-28T22:41:19.6588910+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Information 
+22:37:41:644	[2025-11-28T22:37:41.6441130+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Information
+22:37:41:720	[2025-11-28T22:37:41.7197169+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Information 
 
-	                                   Elapsed time:28,425 ms 
+	                                   Elapsed time:73,745 ms 
 
 	                                   Query: 
 	                                             create table #SVer(ID int,  Name  sysname, Internal_Value int, Value nvarchar(512))
@@ -105,10 +105,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                           drop table #SVer
 	                                         
 	
-	[2025-11-28T22:41:21.3029071+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/JobServer
-	[2025-11-28T22:41:21.3193404+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/JobServer 
+	[2025-11-28T22:37:45.3830056+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/JobServer
+	[2025-11-28T22:37:45.4048353+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/JobServer 
 
-	                                   Elapsed time:16,159 ms 
+	                                   Elapsed time:20,9011 ms 
 
 	                                   Query: SELECT
 	                                   CAST(serverproperty(N'Servername') AS sysname) AS [Name],
@@ -118,10 +118,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   ORDER BY
 	                                   [Name] ASC
 	
-	[2025-11-28T22:41:22.4162193+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@IsSystemObject = 0 and @IsDatabaseSnapshot = 0]/Option
-	[2025-11-28T22:41:22.5673094+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@IsSystemObject = 0 and @IsDatabaseSnapshot = 0]/Option 
+	[2025-11-28T22:37:47.3950352+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@IsSystemObject = 0 and @IsDatabaseSnapshot = 0]/Option
+	[2025-11-28T22:37:47.8647906+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@IsSystemObject = 0 and @IsDatabaseSnapshot = 0]/Option 
 
-	                                   Elapsed time:149,1375 ms 
+	                                   Elapsed time:467,8809 ms 
 
 	                                   Query: 
 	                                           declare @HasViewPermission int
@@ -228,10 +228,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                           drop table #tmp_sync_states
 	                                         
 	
-	[2025-11-28T22:41:23.8484769+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@IsSystemObject = 1]/Option
-	[2025-11-28T22:41:23.8955949+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@IsSystemObject = 1]/Option 
+	[2025-11-28T22:37:49.5675271+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@IsSystemObject = 1]/Option
+	[2025-11-28T22:37:49.5901151+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@IsSystemObject = 1]/Option 
 
-	                                   Elapsed time:46,2916 ms 
+	                                   Elapsed time:21,2398 ms 
 
 	                                   Query: 
 	                                   SELECT
@@ -276,10 +276,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   ORDER BY
 	                                   [Database_Name] ASC
 	
-	[2025-11-28T22:41:25.9510646+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0]
-	[2025-11-28T22:41:26.2662559+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0] 
+	[2025-11-28T22:37:52.3635780+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0]
+	[2025-11-28T22:37:52.4918130+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0] 
 
-	                                   Elapsed time:313,5159 ms 
+	                                   Elapsed time:126,8249 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -333,10 +333,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0 and CAST(tbl.is_node AS bit)=0 and CAST(tbl.is_edge AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)
 	
-	[2025-11-28T22:41:26.3132535+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0]
-	[2025-11-28T22:41:26.5714625+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0] 
+	[2025-11-28T22:37:52.5494904+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0]
+	[2025-11-28T22:37:52.6517846+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0] 
 
-	                                   Elapsed time:257,5067 ms 
+	                                   Elapsed time:101,0486 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -390,10 +390,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)
 	
-	[2025-11-28T22:41:26.6203363+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0]
-	[2025-11-28T22:41:26.7775937+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0] 
+	[2025-11-28T22:37:52.6949884+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0]
+	[2025-11-28T22:37:52.7349357+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0] 
 
-	                                   Elapsed time:157,5223 ms 
+	                                   Elapsed time:38,9257 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -441,10 +441,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0)
 	
-	[2025-11-28T22:41:26.8140496+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0]
-	[2025-11-28T22:41:26.9316559+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0] 
+	[2025-11-28T22:37:52.7783220+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0]
+	[2025-11-28T22:37:52.8197803+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0] 
 
-	                                   Elapsed time:116,9663 ms 
+	                                   Elapsed time:40,4005 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -488,10 +488,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0)
 	
-	[2025-11-28T22:41:26.9701648+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0]
-	[2025-11-28T22:41:27.1401866+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0] 
+	[2025-11-28T22:37:52.8597807+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0]
+	[2025-11-28T22:37:52.9563766+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0] 
 
-	                                   Elapsed time:168,1021 ms 
+	                                   Elapsed time:94,5651 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -547,10 +547,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=2 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)
 	
-	[2025-11-28T22:41:27.1892574+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0]
-	[2025-11-28T22:41:27.3915086+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0] 
+	[2025-11-28T22:37:53.0145231+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0]
+	[2025-11-28T22:37:53.1237139+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0] 
 
-	                                   Elapsed time:200,7375 ms 
+	                                   Elapsed time:108,1747 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -601,10 +601,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=3 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)
 	
-	[2025-11-28T22:41:29.3967419+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0]
-	[2025-11-28T22:41:29.5701542+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0] 
+	[2025-11-28T22:37:56.2310515+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0]
+	[2025-11-28T22:37:56.3744107+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0] 
 
-	                                   Elapsed time:172,5455 ms 
+	                                   Elapsed time:141,8142 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -658,10 +658,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0 and CAST(tbl.is_node AS bit)=0 and CAST(tbl.is_edge AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)
 	
-	[2025-11-28T22:41:29.5941403+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0]
-	[2025-11-28T22:41:29.7639638+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0] 
+	[2025-11-28T22:37:56.4059645+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0]
+	[2025-11-28T22:37:56.4783131+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0] 
 
-	                                   Elapsed time:168,8746 ms 
+	                                   Elapsed time:69,7725 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -715,10 +715,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)
 	
-	[2025-11-28T22:41:29.7928443+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0]
-	[2025-11-28T22:41:30.0540643+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0] 
+	[2025-11-28T22:37:56.5310791+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0]
+	[2025-11-28T22:37:56.5549852+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0] 
 
-	                                   Elapsed time:258,8492 ms 
+	                                   Elapsed time:22,5173 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -766,10 +766,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0)
 	
-	[2025-11-28T22:41:30.0813759+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0]
-	[2025-11-28T22:41:30.1870942+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0] 
+	[2025-11-28T22:37:56.6167565+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0]
+	[2025-11-28T22:37:56.6391125+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0] 
 
-	                                   Elapsed time:104,8901 ms 
+	                                   Elapsed time:20,9662 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -813,10 +813,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0)
 	
-	[2025-11-28T22:41:30.2225972+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0]
-	[2025-11-28T22:41:30.5655180+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0] 
+	[2025-11-28T22:37:56.6764124+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0]
+	[2025-11-28T22:37:56.7798463+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0] 
 
-	                                   Elapsed time:341,4282 ms 
+	                                   Elapsed time:101,7918 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -872,10 +872,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=2 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)
 	
-	[2025-11-28T22:41:30.5954292+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0]
-	[2025-11-28T22:41:30.7489028+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0] 
+	[2025-11-28T22:37:56.8240658+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0]
+	[2025-11-28T22:37:56.9045521+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0] 
 
-	                                   Elapsed time:150,8917 ms 
+	                                   Elapsed time:79,1246 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -926,10 +926,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=3 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)
 	
-	[2025-11-28T22:41:35.3676548+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0]
-	[2025-11-28T22:41:35.5832278+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0] 
+	[2025-11-28T22:38:03.6494681+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0]
+	[2025-11-28T22:38:14.3196389+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0] 
 
-	                                   Elapsed time:214,8823 ms 
+	                                   Elapsed time:10668,3574 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -983,10 +983,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0 and CAST(tbl.is_node AS bit)=0 and CAST(tbl.is_edge AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)and(tbl.name not like '#%')
 	
-	[2025-11-28T22:41:35.6610690+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0]
-	[2025-11-28T22:41:35.8898063+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0] 
+	[2025-11-28T22:38:14.3703974+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0]
+	[2025-11-28T22:38:26.9618821+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0] 
 
-	                                   Elapsed time:227,5631 ms 
+	                                   Elapsed time:12588,7211 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -1040,10 +1040,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)and(tbl.name not like '#%')
 	
-	[2025-11-28T22:41:35.9421932+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0]
-	[2025-11-28T22:41:36.1272897+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0] 
+	[2025-11-28T22:38:27.0145824+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0]
+	[2025-11-28T22:38:36.5877817+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0] 
 
-	                                   Elapsed time:183,6003 ms 
+	                                   Elapsed time:9570,3126 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -1091,10 +1091,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0)and(tbl.name not like '#%')
 	
-	[2025-11-28T22:41:36.1706306+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0]
-	[2025-11-28T22:41:36.4011507+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0] 
+	[2025-11-28T22:38:36.6365625+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0]
+	[2025-11-28T22:38:44.2674706+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0] 
 
-	                                   Elapsed time:229,2396 ms 
+	                                   Elapsed time:7629,4418 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -1138,10 +1138,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0)and(tbl.name not like '#%')
 	
-	[2025-11-28T22:41:36.4409252+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0]
-	[2025-11-28T22:41:36.6256953+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0] 
+	[2025-11-28T22:38:44.3929165+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0]
+	[2025-11-28T22:38:56.3503243+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0] 
 
-	                                   Elapsed time:183,5319 ms 
+	                                   Elapsed time:11955,9072 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
@@ -1197,10 +1197,10 @@ Microsoft SQL Server 2022 (RTM-CU21-GDR) (KB5068406) - 16.0.4222.2 (X64)
 	                                   end          
 	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=2 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)and(tbl.name not like '#%')
 	
-	[2025-11-28T22:41:36.6766859+03:00 Begin Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0]
-	[2025-11-28T22:41:36.9144971+03:00 End Query] URN:Server[@Name='SUNRISE\EXPO']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0] 
+	[2025-11-28T22:38:56.3972810+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0]
+	[2025-11-28T22:39:07.3083065+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0] 
 
-	                                   Elapsed time:235,9466 ms 
+	                                   Elapsed time:10909,3655 ms 
 
 	                                   Query: SELECT
 	                                   tbl.name AS [Name],
