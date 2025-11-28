@@ -1,0 +1,1253 @@
+Host:
+```
+Edition	Windows Server 2022 Datacenter
+Version	21H2
+Installed on	‎28.‎11.‎2025
+OS build	20348.4405
+```
+
+SQL Server:
+```
+Microsoft SQL Server 2025 (RTM) - 17.0.1000.7 (X64) 
+	Oct 21 2025 12:05:57 
+	Copyright (C) 2025 Microsoft Corporation
+	Standard Developer Edition (64-bit) on Windows Server 2022 Datacenter 10.0 <X64> (Build 20348: ) (Hypervisor)
+```
+
+
+
+
+22:37:41:644	[2025-11-28T22:37:41.6441130+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Information
+22:37:41:720	[2025-11-28T22:37:41.7197169+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Information 
+
+22:37:41:720	                                   Elapsed time:73,745 ms 
+
+22:37:41:720	                                   Query: 
+22:37:41:720	                                             create table #SVer(ID int,  Name  sysname, Internal_Value int, Value nvarchar(512))
+22:37:41:720	                                             insert #SVer exec master.dbo.xp_msver
+22:37:41:720	                                             insert #SVer select t.*
+22:37:41:720	                                             from sys.dm_os_host_info
+22:37:41:720	                                             CROSS APPLY (
+22:37:41:720	                                             VALUES
+22:37:41:720	                                             (1001, 'host_platform', 0, host_platform),
+22:37:41:720	                                             (1002, 'host_distribution', 0, host_distribution),
+22:37:41:720	                                             (1003, 'host_release', 0, host_release),
+22:37:41:720	                                             (1004, 'host_service_pack_level', 0, host_service_pack_level),
+22:37:41:720	                                             (1005, 'host_sku', host_sku, ''),
+22:37:41:720	                                             (1006, 'HardwareGeneration', '', ''),
+22:37:41:720	                                             (1007, 'ServiceTier', '', ''),
+22:37:41:720	                                             (1008, 'ReservedStorageSizeMB', '0', '0'),
+22:37:41:720	                                             (1009, 'UsedStorageSizeMB', '0', '0')
+22:37:41:720	                                             ) t(id, [name], internal_value, [value])
+22:37:41:720	                                             -- Managed Instance-specific properties
+22:37:41:720	                                             if (SERVERPROPERTY('EngineEdition') = 8)
+22:37:41:720	                                             begin
+22:37:41:720	                                               DECLARE @gen4memoryPerCoreMB float = 7168.0
+22:37:41:720	                                               DECLARE @gen5memoryPerCoreMB float = 5223.0
+22:37:41:720	                                               DECLARE @physicalMemory float
+22:37:41:720	                                               DECLARE @virtual_core_count int
+22:37:41:720	                                               DECLARE @reservedStorageSize bigint
+22:37:41:720	                                               DECLARE @usedStorageSize decimal(18,2)
+22:37:41:720	                                               DECLARE @hwGeneration nvarchar(128)
+22:37:41:720	                                               DECLARE @serviceTier nvarchar(128)
+22:37:41:720	                                               SET @physicalMemory = (SELECT TOP 1 [virtual_core_count] *
+22:37:41:720	                                                 (
+22:37:41:720	                                                   CASE WHEN [hardware_generation] = 'Gen4' THEN @gen4memoryPerCoreMB
+22:37:41:720	                                                   WHEN [hardware_generation] = 'Gen5' THEN @gen5memoryPerCoreMB
+22:37:41:720	                                                   ELSE 0 END
+22:37:41:720	                                                  )
+22:37:41:720	                                                  FROM master.sys.server_resource_stats 
+22:37:41:720	                                                  ORDER BY start_time DESC)
+22:37:41:720	                                         
+22:37:41:720	                                               IF (@physicalMemory <> 0) 
+22:37:41:720	                                               BEGIN
+22:37:41:720	                                                 UPDATE #SVer SET [Internal_Value] =  @physicalMemory WHERE Name = N'PhysicalMemory'
+22:37:41:720	                                                 UPDATE #SVer SET [Value] = CONCAT( @physicalMemory, ' (',  @physicalMemory * 1024, ')') WHERE Name = N'PhysicalMemory'
+22:37:41:720	                                               END
+22:37:41:720	                                               UPDATE #SVer SET [Internal_Value] = (SELECT TOP 1 [virtual_core_count] FROM master.sys.server_resource_stats ORDER BY start_time desc) WHERE Name = N'ProcessorCount'
+22:37:41:720	                                               UPDATE #SVer SET [Value] = [Internal_Value] WHERE Name = N'ProcessorCount'
+22:37:41:720	                                               SELECT TOP 1
+22:37:41:720	                                                 @hwGeneration = [hardware_generation],
+22:37:41:720	                                                 @serviceTier =[sku],
+22:37:41:720	                                                 @virtual_core_count = [virtual_core_count],
+22:37:41:720	                                                 @reservedStorageSize = [reserved_storage_mb],
+22:37:41:720	                                                 @usedStorageSize = [storage_space_used_mb]
+22:37:41:720	                                               FROM master.sys.server_resource_stats
+22:37:41:720	                                               ORDER BY [start_time] DESC
+22:37:41:720	                                               UPDATE #SVer SET [Value] = @hwGeneration WHERE Name = N'HardwareGeneration'
+22:37:41:720	                                               UPDATE #SVer SET [Value] = @serviceTier WHERE Name = N'ServiceTier'
+22:37:41:720	                                               UPDATE #SVer SET [Value] = @reservedStorageSize WHERE Name = N'ReservedStorageSizeMB'
+22:37:41:720	                                               UPDATE #SVer SET [Value] = @usedStorageSize WHERE Name = N'UsedStorageSizeMB'
+22:37:41:720	                                             end
+22:37:41:720	                                         
+22:37:41:720	                                   SELECT
+22:37:41:720	                                   CAST(
+22:37:41:720	                                           serverproperty(N'Servername')
+22:37:41:720	                                          AS sysname) AS [Server_Name],
+22:37:41:720	                                   'Server[@Name=' + quotename(CAST(
+22:37:41:720	                                           serverproperty(N'Servername')
+22:37:41:720	                                          AS sysname),'''') + ']' AS [Server_Urn],
+22:37:41:720	                                   CAST(null AS int) AS [Server_ServerType],
+22:37:41:720	                                   CAST(0x0001 AS int) AS [Server_Status],
+22:37:41:720	                                   0 AS [Server_IsContainedAuthentication],
+22:37:41:720	                                   (@@microsoftversion / 0x1000000) & 0xff AS [VersionMajor],
+22:37:41:720	                                   (@@microsoftversion / 0x10000) & 0xff AS [VersionMinor],
+22:37:41:720	                                   @@microsoftversion & 0xffff AS [BuildNumber],
+22:37:41:720	                                   CAST(SERVERPROPERTY('IsSingleUser') AS bit) AS [IsSingleUser],
+22:37:41:720	                                   CAST(SERVERPROPERTY(N'Edition') AS sysname) AS [Edition],
+22:37:41:720	                                   CAST(SERVERPROPERTY('EngineEdition') AS int) AS [EngineEdition],
+22:37:41:720	                                   CAST(ISNULL(SERVERPROPERTY(N'IsXTPSupported'), 0) AS bit) AS [IsXTPSupported],
+22:37:41:720	                                   SERVERPROPERTY(N'ProductVersion') AS [VersionString],
+22:37:41:720	                                   ( select Value from #SVer where Name =N'host_platform') AS [HostPlatform],
+22:37:41:720	                                   CAST(FULLTEXTSERVICEPROPERTY('IsFullTextInstalled') AS bit) AS [IsFullTextInstalled]
+22:37:41:720	                                   ORDER BY
+22:37:41:720	                                   [Server_Name] ASC
+22:37:41:720	                                           drop table #SVer
+22:37:41:720	                                         
+22:37:41:720	
+22:37:45:426	[2025-11-28T22:37:45.3830056+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/JobServer
+22:37:45:426	[2025-11-28T22:37:45.4048353+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/JobServer 
+
+22:37:45:426	                                   Elapsed time:20,9011 ms 
+
+22:37:45:426	                                   Query: SELECT
+22:37:45:426	                                   CAST(serverproperty(N'Servername') AS sysname) AS [Name],
+22:37:45:426	                                   'Server[@Name=' + quotename(CAST(
+22:37:45:426	                                           serverproperty(N'Servername')
+22:37:45:426	                                          AS sysname),'''') + ']' + '/JobServer' AS [Urn]
+22:37:45:426	                                   ORDER BY
+22:37:45:426	                                   [Name] ASC
+22:37:45:426	
+22:37:47:436	[2025-11-28T22:37:47.3950352+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@IsSystemObject = 0 and @IsDatabaseSnapshot = 0]/Option
+22:37:47:952	[2025-11-28T22:37:47.8647906+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@IsSystemObject = 0 and @IsDatabaseSnapshot = 0]/Option 
+
+22:37:47:952	                                   Elapsed time:467,8809 ms 
+
+22:37:47:952	                                   Query: 
+22:37:47:952	                                           declare @HasViewPermission int
+22:37:47:952	                                           select @HasViewPermission = HAS_PERMS_BY_NAME(null, null, 'VIEW SERVER STATE')
+22:37:47:952	                                         
+22:37:47:952	                                           create table #tmp_db_ars (replica_id uniqueidentifier, group_id uniqueidentifier, replica_server_name sysname)
+22:37:47:952	                                           create table #tmp_db_ags (group_id uniqueidentifier, name sysname)
+22:37:47:952	                                         
+22:37:47:952	                                           create table #tmp_db_hadr_dbrs (group_database_id uniqueidentifier, synchronization_state tinyint, is_local bit, group_id uniqueidentifier, database_id int)
+22:37:47:952	                                         
+22:37:47:952	                                           create table #tmp_sync_states (database_id int, sync_state tinyint)
+22:37:47:952	                                         
+22:37:47:952	                                           if (@HasViewPermission = 1)
+22:37:47:952	                                           begin
+22:37:47:952	                                           insert into #tmp_db_ars select replica_id, group_id, replica_server_name  from  master.sys.availability_replicas
+22:37:47:952	                                           insert into #tmp_db_ags select group_id, name from master.sys.availability_groups
+22:37:47:952	                                           end
+22:37:47:952	                                         
+22:37:47:952	                                           if (@HasViewPermission = 1)
+22:37:47:952	                                           begin
+22:37:47:952	                                           insert into #tmp_db_hadr_dbrs select group_database_id, synchronization_state, is_local, group_id, database_id from master.sys.dm_hadr_database_replica_states
+22:37:47:952	                                           end
+22:37:47:952	                                         
+22:37:47:952	                                           if (@HasViewPermission = 1)
+22:37:47:952	                                           begin
+22:37:47:952	                                           if serverproperty('EngineEdition') = 8
+22:37:47:952	                                           begin
+22:37:47:952	                                           insert into #tmp_sync_states
+22:37:47:952	                                           select dtb.database_id, hadrd.synchronization_state as synchronization_state
+22:37:47:952	                                           from sys.databases AS dtb
+22:37:47:952	                                           join #tmp_db_hadr_dbrs AS hadrd ON hadrd.database_id = dtb.database_id AND hadrd.is_local = 1
+22:37:47:952	                                           join #tmp_db_ags AS avag ON hadrd.group_id = avag.group_id
+22:37:47:952	                                           join #tmp_db_ars AS avar ON avag.name = avar.replica_server_name
+22:37:47:952	                                           join #tmp_db_ags AS avag2 ON avar.group_id = avag2.group_id
+22:37:47:952	                                           where hadrd.database_id = dtb.database_id
+22:37:47:952	                                           end
+22:37:47:952	                                           else
+22:37:47:952	                                           begin
+22:37:47:952	                                           insert into #tmp_sync_states
+22:37:47:952	                                           select dtb.database_id, hadrd.synchronization_state
+22:37:47:952	                                           from sys.databases AS dtb
+22:37:47:952	                                           join #tmp_db_hadr_dbrs AS hadrd ON hadrd.database_id = dtb.database_id AND hadrd.is_local = 1
+22:37:47:952	                                           end
+22:37:47:952	                                           end
+22:37:47:952	                                         
+22:37:47:952	                                   SELECT
+22:37:47:952	                                   dtb.name AS [Database_Name],
+22:37:47:952	                                   'Server[@Name=' + quotename(CAST(
+22:37:47:952	                                           serverproperty(N'Servername')
+22:37:47:952	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(dtb.name,'''') + ']' AS [Database_Urn],
+22:37:47:952	                                   dtb.containment AS [Database_ContainmentType],
+22:37:47:952	                                   dtb.recovery_model AS [Database_RecoveryModel],
+22:37:47:952	                                   ISNULL(suser_sname(dtb.owner_sid),'') AS [Database_Owner],
+22:37:47:952	                                           case
+22:37:47:952	                                           when dtb.collation_name is null then 0x200
+22:37:47:952	                                           else 0
+22:37:47:952	                                           end |
+22:37:47:952	                                           case
+22:37:47:952	                                           when 1 = dtb.is_in_standby then 0x40
+22:37:47:952	                                           else 0
+22:37:47:952	                                           end |
+22:37:47:952	                                           case dtb.state
+22:37:47:952	                                           when 1 then 0x2
+22:37:47:952	                                           when 2 then 0x8
+22:37:47:952	                                           when 3 then 0x4
+22:37:47:952	                                           when 4 then 0x10
+22:37:47:952	                                           when 5 then 0x100
+22:37:47:952	                                           when 6 then 0x20
+22:37:47:952	                                           else 1
+22:37:47:952	                                           end
+22:37:47:952	                                          AS [Database_Status],
+22:37:47:952	                                   dtb.compatibility_level AS [Database_CompatibilityLevel],
+22:37:47:952	                                   ISNULL(dmi.mirroring_role,0) AS [Database_MirroringRole],
+22:37:47:952	                                   ISNULL(dmi.mirroring_state + 1, 0) AS [Database_MirroringStatus],
+22:37:47:952	                                   sync_state.sync_state AS [Database_AvailabilityDatabaseSynchronizationState],
+22:37:47:952	                                   0 AS [Database_HasMemoryOptimizedObjects],
+22:37:47:952	                                   CAST(0 AS bit) AS [Database_RemoteDataArchiveEnabled],
+22:37:47:952	                                   CAST(
+22:37:47:952	                                           case
+22:37:47:952	                                           when SERVERPROPERTY('EngineEdition') = 6 then cast(1 as bit)
+22:37:47:952	                                           else cast(0 as bit)
+22:37:47:952	                                           end
+22:37:47:952	                                          AS bit) AS [Database_IsSqlDw],
+22:37:47:952	                                   case when SERVERPROPERTY('EngineEdition') = 8 then SERVERPROPERTY('IsFullTextInstalled') else dtb.is_fulltext_enabled end AS [Database_IsFullTextEnabled],
+22:37:47:952	                                   CAST(ISNULL(dtb.is_ledger_on, 0) AS bit) AS [Database_IsLedger],
+22:37:47:952	                                   dtb.recovery_model AS [RecoveryModel],
+22:37:47:952	                                   dtb.user_access AS [UserAccess],
+22:37:47:952	                                   dtb.is_read_only AS [ReadOnly],
+22:37:47:952	                                   dtb.name AS [Database_DatabaseName2],
+22:37:47:952	                                   dtb.name AS [Database_DatabaseName3]
+22:37:47:952	                                   FROM
+22:37:47:952	                                   master.sys.databases AS dtb
+22:37:47:952	                                   LEFT OUTER JOIN sys.database_mirroring AS dmi ON dmi.database_id = dtb.database_id
+22:37:47:952	                                   LEFT OUTER JOIN #tmp_sync_states AS sync_state ON dtb.database_id = sync_state.database_id
+22:37:47:952	                                   WHERE
+22:37:47:952	                                   (CAST(case when dtb.name in ('master','model','msdb','tempdb') then 1 else dtb.is_distributor end AS bit)=0 and CAST(isnull(dtb.source_database_id, 0) AS bit)=0)
+22:37:47:952	                                   ORDER BY
+22:37:47:952	                                   [Database_Name] ASC
+22:37:47:952	                                           drop table #tmp_db_ars
+22:37:47:952	                                           drop table #tmp_db_ags        
+22:37:47:952	                                         
+22:37:47:952	                                           drop table #tmp_db_hadr_dbrs
+22:37:47:952	                                         
+22:37:47:952	                                           drop table #tmp_sync_states
+22:37:47:952	                                         
+22:37:47:952	
+22:37:49:584	[2025-11-28T22:37:49.5675271+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@IsSystemObject = 1]/Option
+22:37:49:591	[2025-11-28T22:37:49.5901151+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@IsSystemObject = 1]/Option 
+
+22:37:49:591	                                   Elapsed time:21,2398 ms 
+
+22:37:49:591	                                   Query: 
+22:37:49:591	                                   SELECT
+22:37:49:591	                                   dtb.name AS [Database_Name],
+22:37:49:591	                                   'Server[@Name=' + quotename(CAST(
+22:37:49:591	                                           serverproperty(N'Servername')
+22:37:49:591	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(dtb.name,'''') + ']' AS [Database_Urn],
+22:37:49:591	                                           case
+22:37:49:591	                                           when dtb.collation_name is null then 0x200
+22:37:49:591	                                           else 0
+22:37:49:591	                                           end |
+22:37:49:591	                                           case
+22:37:49:591	                                           when 1 = dtb.is_in_standby then 0x40
+22:37:49:591	                                           else 0
+22:37:49:591	                                           end |
+22:37:49:591	                                           case dtb.state
+22:37:49:591	                                           when 1 then 0x2
+22:37:49:591	                                           when 2 then 0x8
+22:37:49:591	                                           when 3 then 0x4
+22:37:49:591	                                           when 4 then 0x10
+22:37:49:591	                                           when 5 then 0x100
+22:37:49:591	                                           when 6 then 0x20
+22:37:49:591	                                           else 1
+22:37:49:591	                                           end
+22:37:49:591	                                          AS [Database_Status],
+22:37:49:591	                                   dtb.compatibility_level AS [Database_CompatibilityLevel],
+22:37:49:591	                                   CAST(
+22:37:49:591	                                           case
+22:37:49:591	                                           when SERVERPROPERTY('EngineEdition') = 6 then cast(1 as bit)
+22:37:49:591	                                           else cast(0 as bit)
+22:37:49:591	                                           end
+22:37:49:591	                                          AS bit) AS [Database_IsSqlDw],
+22:37:49:591	                                   case when SERVERPROPERTY('EngineEdition') = 8 then SERVERPROPERTY('IsFullTextInstalled') else dtb.is_fulltext_enabled end AS [Database_IsFullTextEnabled],
+22:37:49:591	                                   dtb.recovery_model AS [RecoveryModel],
+22:37:49:591	                                   dtb.user_access AS [UserAccess],
+22:37:49:591	                                   dtb.is_read_only AS [ReadOnly],
+22:37:49:591	                                   dtb.name AS [Database_DatabaseName2]
+22:37:49:591	                                   FROM
+22:37:49:591	                                   master.sys.databases AS dtb
+22:37:49:591	                                   WHERE
+22:37:49:591	                                   (CAST(case when dtb.name in ('master','model','msdb','tempdb') then 1 else dtb.is_distributor end AS bit)=1)
+22:37:49:591	                                   ORDER BY
+22:37:49:591	                                   [Database_Name] ASC
+22:37:49:591	
+22:37:52:368	[2025-11-28T22:37:52.3635780+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0]
+22:37:52:602	[2025-11-28T22:37:52.4918130+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0] 
+
+22:37:52:602	                                   Elapsed time:126,8249 ms 
+
+22:37:52:602	                                   Query: SELECT
+22:37:52:602	                                   tbl.name AS [Name],
+22:37:52:602	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:52:602	                                   'Server[@Name=' + quotename(CAST(
+22:37:52:602	                                           serverproperty(N'Servername')
+22:37:52:602	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:52:602	                                   tbl.create_date AS [CreateDate],
+22:37:52:602	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:52:602	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:37:52:602	                                   CAST(0 AS bit) AS [RemoteDataArchiveEnabled],
+22:37:52:602	                                   tbl.temporal_type AS [TemporalType],
+22:37:52:602	                                   CAST(ISNULL(tbl.ledger_type, 0) AS int) AS [LedgerType],
+22:37:52:602	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:37:52:602	                                   CAST(
+22:37:52:602	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:37:52:602	                                           WHERE object_id = tbl.object_id
+22:37:52:602	                                           AND is_sparse = 1), 0)
+22:37:52:602	                                          AS bit) AS [HasSparseColumn],
+22:37:52:602	                                   CAST(tbl.is_node AS bit) AS [IsNode],
+22:37:52:602	                                   CAST(tbl.is_edge AS bit) AS [IsEdge],
+22:37:52:602	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:52:602	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:52:602	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:52:602	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:52:602	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:52:602	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:52:602	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:52:602	                                   FROM
+22:37:52:602	                                   sys.tables AS tbl
+22:37:52:602	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:52:602	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:52:602	                                         
+22:37:52:602	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:37:52:602	                                   WHERE
+22:37:52:602	                                   (CAST(
+22:37:52:602	                                    case 
+22:37:52:602	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:52:602	                                       when (
+22:37:52:602	                                           select 
+22:37:52:602	                                               major_id 
+22:37:52:602	                                           from 
+22:37:52:602	                                               sys.extended_properties 
+22:37:52:602	                                           where 
+22:37:52:602	                                               major_id = tbl.object_id and 
+22:37:52:602	                                               minor_id = 0 and 
+22:37:52:602	                                               class = 1 and 
+22:37:52:602	                                               name = N'microsoft_database_tools_support') 
+22:37:52:602	                                           is not null then 1
+22:37:52:602	                                       else 0
+22:37:52:602	                                   end          
+22:37:52:602	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0 and CAST(tbl.is_node AS bit)=0 and CAST(tbl.is_edge AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)
+22:37:52:602	
+22:37:52:653	[2025-11-28T22:37:52.5494904+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0]
+22:37:52:654	[2025-11-28T22:37:52.6517846+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0] 
+
+22:37:52:654	                                   Elapsed time:101,0486 ms 
+
+22:37:52:654	                                   Query: SELECT
+22:37:52:654	                                   tbl.name AS [Name],
+22:37:52:654	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:52:654	                                   'Server[@Name=' + quotename(CAST(
+22:37:52:654	                                           serverproperty(N'Servername')
+22:37:52:654	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:52:654	                                   tbl.create_date AS [CreateDate],
+22:37:52:654	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:52:654	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:37:52:654	                                   CAST(ISNULL(historyTable.object_id, 0) AS int) AS [HistoryTableID],
+22:37:52:654	                                   CAST(ISNULL(historyTable.name, N'') AS sysname) AS [HistoryTableName],
+22:37:52:654	                                   CAST(ISNULL(SCHEMA_NAME(historyTable.schema_id), N'') AS sysname) AS [HistoryTableSchema],
+22:37:52:654	                                   tbl.temporal_type AS [TemporalType],
+22:37:52:654	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:37:52:654	                                   CAST(
+22:37:52:654	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:37:52:654	                                           WHERE object_id = tbl.object_id
+22:37:52:654	                                           AND is_sparse = 1), 0)
+22:37:52:654	                                          AS bit) AS [HasSparseColumn],
+22:37:52:654	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:52:654	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:52:654	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:52:654	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:52:654	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:52:654	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:52:654	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:52:654	                                   FROM
+22:37:52:654	                                   sys.tables AS tbl
+22:37:52:654	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:52:654	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:52:654	                                         
+22:37:52:654	                                   LEFT OUTER JOIN sys.tables as historyTable ON historyTable.object_id = tbl.history_table_id
+22:37:52:654	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:37:52:654	                                   WHERE
+22:37:52:654	                                   (CAST(
+22:37:52:654	                                    case 
+22:37:52:654	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:52:654	                                       when (
+22:37:52:654	                                           select 
+22:37:52:654	                                               major_id 
+22:37:52:654	                                           from 
+22:37:52:654	                                               sys.extended_properties 
+22:37:52:654	                                           where 
+22:37:52:654	                                               major_id = tbl.object_id and 
+22:37:52:654	                                               minor_id = 0 and 
+22:37:52:654	                                               class = 1 and 
+22:37:52:654	                                               name = N'microsoft_database_tools_support') 
+22:37:52:654	                                           is not null then 1
+22:37:52:654	                                       else 0
+22:37:52:654	                                   end          
+22:37:52:654	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)
+22:37:52:654	
+22:37:52:710	[2025-11-28T22:37:52.6949884+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0]
+22:37:52:740	[2025-11-28T22:37:52.7349357+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0] 
+
+22:37:52:740	                                   Elapsed time:38,9257 ms 
+
+22:37:52:740	                                   Query: SELECT
+22:37:52:740	                                   tbl.name AS [Name],
+22:37:52:740	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:52:740	                                   'Server[@Name=' + quotename(CAST(
+22:37:52:740	                                           serverproperty(N'Servername')
+22:37:52:740	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:52:740	                                   tbl.create_date AS [CreateDate],
+22:37:52:740	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:52:740	                                   case when (tbl.durability=1) then 0 else 1 end AS [Durability],
+22:37:52:740	                                   CAST(ISNULL(historyTable.object_id, 0) AS int) AS [HistoryTableID],
+22:37:52:740	                                   CAST(ISNULL(historyTable.name, N'') AS sysname) AS [HistoryTableName],
+22:37:52:740	                                   CAST(ISNULL(SCHEMA_NAME(historyTable.schema_id), N'') AS sysname) AS [HistoryTableSchema],
+22:37:52:740	                                   tbl.temporal_type AS [TemporalType],
+22:37:52:740	                                   CAST(0 AS bit) AS [RemoteDataArchiveEnabled],
+22:37:52:740	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:52:740	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:52:740	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:52:740	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:52:740	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:52:740	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:52:740	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:52:740	                                   FROM
+22:37:52:740	                                   sys.tables AS tbl
+22:37:52:740	                                   LEFT OUTER JOIN sys.tables as historyTable ON historyTable.object_id = tbl.history_table_id
+22:37:52:740	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:52:740	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:52:740	                                         
+22:37:52:740	                                   WHERE
+22:37:52:740	                                   (CAST(
+22:37:52:740	                                    case 
+22:37:52:740	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:52:740	                                       when (
+22:37:52:740	                                           select 
+22:37:52:740	                                               major_id 
+22:37:52:740	                                           from 
+22:37:52:740	                                               sys.extended_properties 
+22:37:52:740	                                           where 
+22:37:52:740	                                               major_id = tbl.object_id and 
+22:37:52:740	                                               minor_id = 0 and 
+22:37:52:740	                                               class = 1 and 
+22:37:52:740	                                               name = N'microsoft_database_tools_support') 
+22:37:52:740	                                           is not null then 1
+22:37:52:740	                                       else 0
+22:37:52:740	                                   end          
+22:37:52:740	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0)
+22:37:52:740	
+22:37:52:788	[2025-11-28T22:37:52.7783220+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0]
+22:37:52:834	[2025-11-28T22:37:52.8197803+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0] 
+
+22:37:52:834	                                   Elapsed time:40,4005 ms 
+
+22:37:52:834	                                   Query: SELECT
+22:37:52:834	                                   tbl.name AS [Name],
+22:37:52:834	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:52:834	                                   'Server[@Name=' + quotename(CAST(
+22:37:52:834	                                           serverproperty(N'Servername')
+22:37:52:834	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:52:834	                                   tbl.create_date AS [CreateDate],
+22:37:52:834	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:52:834	                                   case when (tbl.durability=1) then 0 else 1 end AS [Durability],
+22:37:52:834	                                   tbl.temporal_type AS [TemporalType],
+22:37:52:834	                                   CAST(0 AS bit) AS [RemoteDataArchiveEnabled],
+22:37:52:834	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:52:834	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:52:834	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:52:834	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:52:834	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:52:834	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:52:834	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:52:834	                                   FROM
+22:37:52:834	                                   sys.tables AS tbl
+22:37:52:834	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:52:834	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:52:834	                                         
+22:37:52:834	                                   WHERE
+22:37:52:834	                                   (CAST(
+22:37:52:834	                                    case 
+22:37:52:834	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:52:834	                                       when (
+22:37:52:834	                                           select 
+22:37:52:834	                                               major_id 
+22:37:52:834	                                           from 
+22:37:52:834	                                               sys.extended_properties 
+22:37:52:834	                                           where 
+22:37:52:834	                                               major_id = tbl.object_id and 
+22:37:52:834	                                               minor_id = 0 and 
+22:37:52:834	                                               class = 1 and 
+22:37:52:834	                                               name = N'microsoft_database_tools_support') 
+22:37:52:834	                                           is not null then 1
+22:37:52:834	                                       else 0
+22:37:52:834	                                   end          
+22:37:52:834	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0)
+22:37:52:834	
+22:37:52:861	[2025-11-28T22:37:52.8597807+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0]
+22:37:52:957	[2025-11-28T22:37:52.9563766+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0] 
+
+22:37:52:957	                                   Elapsed time:94,5651 ms 
+
+22:37:52:957	                                   Query: SELECT
+22:37:52:957	                                   tbl.name AS [Name],
+22:37:52:957	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:52:957	                                   'Server[@Name=' + quotename(CAST(
+22:37:52:957	                                           serverproperty(N'Servername')
+22:37:52:957	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:52:957	                                   tbl.create_date AS [CreateDate],
+22:37:52:957	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:52:957	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:37:52:957	                                   CAST(ISNULL(historyTable.object_id, 0) AS int) AS [HistoryTableID],
+22:37:52:957	                                   CAST(ISNULL(historyTable.name, N'') AS sysname) AS [HistoryTableName],
+22:37:52:957	                                   CAST(ISNULL(SCHEMA_NAME(historyTable.schema_id), N'') AS sysname) AS [HistoryTableSchema],
+22:37:52:957	                                   tbl.temporal_type AS [TemporalType],
+22:37:52:957	                                   CAST(ISNULL(tbl.ledger_type, 0) AS int) AS [LedgerType],
+22:37:52:957	                                   CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit) AS [IsDroppedLedgerTable],
+22:37:52:957	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:37:52:957	                                   CAST(
+22:37:52:957	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:37:52:957	                                           WHERE object_id = tbl.object_id
+22:37:52:957	                                           AND is_sparse = 1), 0)
+22:37:52:957	                                          AS bit) AS [HasSparseColumn],
+22:37:52:957	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:52:957	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:52:957	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:52:957	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:52:957	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:52:957	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:52:957	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:52:957	                                   FROM
+22:37:52:957	                                   sys.tables AS tbl
+22:37:52:957	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:52:957	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:52:957	                                         
+22:37:52:957	                                   LEFT OUTER JOIN sys.tables as historyTable ON historyTable.object_id = tbl.history_table_id
+22:37:52:957	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:37:52:957	                                   WHERE
+22:37:52:957	                                   (CAST(
+22:37:52:957	                                    case 
+22:37:52:957	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:52:957	                                       when (
+22:37:52:957	                                           select 
+22:37:52:957	                                               major_id 
+22:37:52:957	                                           from 
+22:37:52:957	                                               sys.extended_properties 
+22:37:52:957	                                           where 
+22:37:52:957	                                               major_id = tbl.object_id and 
+22:37:52:957	                                               minor_id = 0 and 
+22:37:52:957	                                               class = 1 and 
+22:37:52:957	                                               name = N'microsoft_database_tools_support') 
+22:37:52:957	                                           is not null then 1
+22:37:52:957	                                       else 0
+22:37:52:957	                                   end          
+22:37:52:957	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=2 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)
+22:37:52:957	
+22:37:53:024	[2025-11-28T22:37:53.0145231+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0]
+22:37:53:125	[2025-11-28T22:37:53.1237139+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='model']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0] 
+
+22:37:53:125	                                   Elapsed time:108,1747 ms 
+
+22:37:53:125	                                   Query: SELECT
+22:37:53:125	                                   tbl.name AS [Name],
+22:37:53:125	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:53:125	                                   'Server[@Name=' + quotename(CAST(
+22:37:53:125	                                           serverproperty(N'Servername')
+22:37:53:125	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:53:125	                                   tbl.create_date AS [CreateDate],
+22:37:53:125	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:53:125	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:37:53:125	                                   CAST(ISNULL(tbl.ledger_type, 0) AS int) AS [LedgerType],
+22:37:53:125	                                   CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit) AS [IsDroppedLedgerTable],
+22:37:53:125	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:37:53:125	                                   CAST(
+22:37:53:125	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:37:53:125	                                           WHERE object_id = tbl.object_id
+22:37:53:125	                                           AND is_sparse = 1), 0)
+22:37:53:125	                                          AS bit) AS [HasSparseColumn],
+22:37:53:125	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:53:125	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:53:125	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:53:125	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:53:125	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:53:125	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:53:125	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:53:125	                                   FROM
+22:37:53:125	                                   sys.tables AS tbl
+22:37:53:125	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:53:125	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:53:125	                                         
+22:37:53:125	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:37:53:125	                                   WHERE
+22:37:53:125	                                   (CAST(
+22:37:53:125	                                    case 
+22:37:53:125	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:53:125	                                       when (
+22:37:53:125	                                           select 
+22:37:53:125	                                               major_id 
+22:37:53:125	                                           from 
+22:37:53:125	                                               sys.extended_properties 
+22:37:53:125	                                           where 
+22:37:53:125	                                               major_id = tbl.object_id and 
+22:37:53:125	                                               minor_id = 0 and 
+22:37:53:125	                                               class = 1 and 
+22:37:53:125	                                               name = N'microsoft_database_tools_support') 
+22:37:53:125	                                           is not null then 1
+22:37:53:125	                                       else 0
+22:37:53:125	                                   end          
+22:37:53:125	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=3 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)
+22:37:53:125	
+22:37:56:256	[2025-11-28T22:37:56.2310515+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0]
+22:37:56:461	[2025-11-28T22:37:56.3744107+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0] 
+
+22:37:56:461	                                   Elapsed time:141,8142 ms 
+
+22:37:56:461	                                   Query: SELECT
+22:37:56:461	                                   tbl.name AS [Name],
+22:37:56:461	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:56:461	                                   'Server[@Name=' + quotename(CAST(
+22:37:56:461	                                           serverproperty(N'Servername')
+22:37:56:461	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:56:461	                                   tbl.create_date AS [CreateDate],
+22:37:56:461	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:56:461	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:37:56:461	                                   CAST(0 AS bit) AS [RemoteDataArchiveEnabled],
+22:37:56:461	                                   tbl.temporal_type AS [TemporalType],
+22:37:56:461	                                   CAST(ISNULL(tbl.ledger_type, 0) AS int) AS [LedgerType],
+22:37:56:461	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:37:56:461	                                   CAST(
+22:37:56:461	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:37:56:461	                                           WHERE object_id = tbl.object_id
+22:37:56:461	                                           AND is_sparse = 1), 0)
+22:37:56:461	                                          AS bit) AS [HasSparseColumn],
+22:37:56:461	                                   CAST(tbl.is_node AS bit) AS [IsNode],
+22:37:56:461	                                   CAST(tbl.is_edge AS bit) AS [IsEdge],
+22:37:56:461	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:56:461	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:56:461	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:56:461	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:56:461	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:56:461	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:56:461	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:56:461	                                   FROM
+22:37:56:461	                                   sys.tables AS tbl
+22:37:56:461	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:56:461	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:56:461	                                         
+22:37:56:461	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:37:56:461	                                   WHERE
+22:37:56:461	                                   (CAST(
+22:37:56:461	                                    case 
+22:37:56:461	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:56:461	                                       when (
+22:37:56:461	                                           select 
+22:37:56:461	                                               major_id 
+22:37:56:461	                                           from 
+22:37:56:461	                                               sys.extended_properties 
+22:37:56:461	                                           where 
+22:37:56:461	                                               major_id = tbl.object_id and 
+22:37:56:461	                                               minor_id = 0 and 
+22:37:56:461	                                               class = 1 and 
+22:37:56:461	                                               name = N'microsoft_database_tools_support') 
+22:37:56:461	                                           is not null then 1
+22:37:56:461	                                       else 0
+22:37:56:461	                                   end          
+22:37:56:461	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0 and CAST(tbl.is_node AS bit)=0 and CAST(tbl.is_edge AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)
+22:37:56:461	
+22:37:56:571	[2025-11-28T22:37:56.4059645+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0]
+22:37:56:571	[2025-11-28T22:37:56.4783131+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0] 
+
+22:37:56:571	                                   Elapsed time:69,7725 ms 
+
+22:37:56:571	                                   Query: SELECT
+22:37:56:571	                                   tbl.name AS [Name],
+22:37:56:571	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:56:571	                                   'Server[@Name=' + quotename(CAST(
+22:37:56:571	                                           serverproperty(N'Servername')
+22:37:56:571	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:56:571	                                   tbl.create_date AS [CreateDate],
+22:37:56:571	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:56:571	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:37:56:571	                                   CAST(ISNULL(historyTable.object_id, 0) AS int) AS [HistoryTableID],
+22:37:56:571	                                   CAST(ISNULL(historyTable.name, N'') AS sysname) AS [HistoryTableName],
+22:37:56:571	                                   CAST(ISNULL(SCHEMA_NAME(historyTable.schema_id), N'') AS sysname) AS [HistoryTableSchema],
+22:37:56:571	                                   tbl.temporal_type AS [TemporalType],
+22:37:56:571	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:37:56:571	                                   CAST(
+22:37:56:571	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:37:56:571	                                           WHERE object_id = tbl.object_id
+22:37:56:571	                                           AND is_sparse = 1), 0)
+22:37:56:571	                                          AS bit) AS [HasSparseColumn],
+22:37:56:571	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:56:571	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:56:571	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:56:571	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:56:571	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:56:571	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:56:571	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:56:571	                                   FROM
+22:37:56:571	                                   sys.tables AS tbl
+22:37:56:571	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:56:571	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:56:571	                                         
+22:37:56:571	                                   LEFT OUTER JOIN sys.tables as historyTable ON historyTable.object_id = tbl.history_table_id
+22:37:56:571	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:37:56:571	                                   WHERE
+22:37:56:571	                                   (CAST(
+22:37:56:571	                                    case 
+22:37:56:571	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:56:571	                                       when (
+22:37:56:571	                                           select 
+22:37:56:571	                                               major_id 
+22:37:56:571	                                           from 
+22:37:56:571	                                               sys.extended_properties 
+22:37:56:571	                                           where 
+22:37:56:571	                                               major_id = tbl.object_id and 
+22:37:56:571	                                               minor_id = 0 and 
+22:37:56:571	                                               class = 1 and 
+22:37:56:571	                                               name = N'microsoft_database_tools_support') 
+22:37:56:571	                                           is not null then 1
+22:37:56:571	                                       else 0
+22:37:56:571	                                   end          
+22:37:56:571	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)
+22:37:56:571	
+22:37:56:639	[2025-11-28T22:37:56.5310791+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0]
+22:37:56:639	[2025-11-28T22:37:56.5549852+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0] 
+
+22:37:56:639	                                   Elapsed time:22,5173 ms 
+
+22:37:56:639	                                   Query: SELECT
+22:37:56:639	                                   tbl.name AS [Name],
+22:37:56:639	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:56:639	                                   'Server[@Name=' + quotename(CAST(
+22:37:56:639	                                           serverproperty(N'Servername')
+22:37:56:639	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:56:639	                                   tbl.create_date AS [CreateDate],
+22:37:56:639	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:56:639	                                   case when (tbl.durability=1) then 0 else 1 end AS [Durability],
+22:37:56:639	                                   CAST(ISNULL(historyTable.object_id, 0) AS int) AS [HistoryTableID],
+22:37:56:639	                                   CAST(ISNULL(historyTable.name, N'') AS sysname) AS [HistoryTableName],
+22:37:56:639	                                   CAST(ISNULL(SCHEMA_NAME(historyTable.schema_id), N'') AS sysname) AS [HistoryTableSchema],
+22:37:56:639	                                   tbl.temporal_type AS [TemporalType],
+22:37:56:639	                                   CAST(0 AS bit) AS [RemoteDataArchiveEnabled],
+22:37:56:639	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:56:639	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:56:639	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:56:639	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:56:639	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:56:639	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:56:639	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:56:639	                                   FROM
+22:37:56:639	                                   sys.tables AS tbl
+22:37:56:639	                                   LEFT OUTER JOIN sys.tables as historyTable ON historyTable.object_id = tbl.history_table_id
+22:37:56:639	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:56:639	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:56:639	                                         
+22:37:56:639	                                   WHERE
+22:37:56:639	                                   (CAST(
+22:37:56:639	                                    case 
+22:37:56:639	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:56:639	                                       when (
+22:37:56:639	                                           select 
+22:37:56:639	                                               major_id 
+22:37:56:639	                                           from 
+22:37:56:639	                                               sys.extended_properties 
+22:37:56:639	                                           where 
+22:37:56:639	                                               major_id = tbl.object_id and 
+22:37:56:639	                                               minor_id = 0 and 
+22:37:56:639	                                               class = 1 and 
+22:37:56:639	                                               name = N'microsoft_database_tools_support') 
+22:37:56:639	                                           is not null then 1
+22:37:56:639	                                       else 0
+22:37:56:639	                                   end          
+22:37:56:639	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0)
+22:37:56:639	
+22:37:56:694	[2025-11-28T22:37:56.6167565+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0]
+22:37:56:694	[2025-11-28T22:37:56.6391125+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0] 
+
+22:37:56:694	                                   Elapsed time:20,9662 ms 
+
+22:37:56:694	                                   Query: SELECT
+22:37:56:694	                                   tbl.name AS [Name],
+22:37:56:694	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:56:694	                                   'Server[@Name=' + quotename(CAST(
+22:37:56:694	                                           serverproperty(N'Servername')
+22:37:56:694	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:56:694	                                   tbl.create_date AS [CreateDate],
+22:37:56:694	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:56:694	                                   case when (tbl.durability=1) then 0 else 1 end AS [Durability],
+22:37:56:694	                                   tbl.temporal_type AS [TemporalType],
+22:37:56:694	                                   CAST(0 AS bit) AS [RemoteDataArchiveEnabled],
+22:37:56:694	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:56:694	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:56:694	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:56:694	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:56:694	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:56:694	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:56:694	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:56:694	                                   FROM
+22:37:56:694	                                   sys.tables AS tbl
+22:37:56:694	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:56:694	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:56:694	                                         
+22:37:56:694	                                   WHERE
+22:37:56:694	                                   (CAST(
+22:37:56:694	                                    case 
+22:37:56:694	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:56:694	                                       when (
+22:37:56:694	                                           select 
+22:37:56:694	                                               major_id 
+22:37:56:694	                                           from 
+22:37:56:694	                                               sys.extended_properties 
+22:37:56:694	                                           where 
+22:37:56:694	                                               major_id = tbl.object_id and 
+22:37:56:694	                                               minor_id = 0 and 
+22:37:56:694	                                               class = 1 and 
+22:37:56:694	                                               name = N'microsoft_database_tools_support') 
+22:37:56:694	                                           is not null then 1
+22:37:56:694	                                       else 0
+22:37:56:694	                                   end          
+22:37:56:694	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0)
+22:37:56:694	
+22:37:56:695	[2025-11-28T22:37:56.6764124+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0]
+22:37:56:835	[2025-11-28T22:37:56.7798463+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0] 
+
+22:37:56:835	                                   Elapsed time:101,7918 ms 
+
+22:37:56:835	                                   Query: SELECT
+22:37:56:835	                                   tbl.name AS [Name],
+22:37:56:835	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:56:835	                                   'Server[@Name=' + quotename(CAST(
+22:37:56:835	                                           serverproperty(N'Servername')
+22:37:56:835	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:56:835	                                   tbl.create_date AS [CreateDate],
+22:37:56:835	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:56:835	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:37:56:835	                                   CAST(ISNULL(historyTable.object_id, 0) AS int) AS [HistoryTableID],
+22:37:56:835	                                   CAST(ISNULL(historyTable.name, N'') AS sysname) AS [HistoryTableName],
+22:37:56:835	                                   CAST(ISNULL(SCHEMA_NAME(historyTable.schema_id), N'') AS sysname) AS [HistoryTableSchema],
+22:37:56:835	                                   tbl.temporal_type AS [TemporalType],
+22:37:56:835	                                   CAST(ISNULL(tbl.ledger_type, 0) AS int) AS [LedgerType],
+22:37:56:835	                                   CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit) AS [IsDroppedLedgerTable],
+22:37:56:835	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:37:56:835	                                   CAST(
+22:37:56:835	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:37:56:835	                                           WHERE object_id = tbl.object_id
+22:37:56:835	                                           AND is_sparse = 1), 0)
+22:37:56:835	                                          AS bit) AS [HasSparseColumn],
+22:37:56:835	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:56:835	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:56:835	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:56:835	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:56:835	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:56:835	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:56:835	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:56:835	                                   FROM
+22:37:56:835	                                   sys.tables AS tbl
+22:37:56:835	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:56:835	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:56:835	                                         
+22:37:56:835	                                   LEFT OUTER JOIN sys.tables as historyTable ON historyTable.object_id = tbl.history_table_id
+22:37:56:835	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:37:56:835	                                   WHERE
+22:37:56:835	                                   (CAST(
+22:37:56:835	                                    case 
+22:37:56:835	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:56:835	                                       when (
+22:37:56:835	                                           select 
+22:37:56:835	                                               major_id 
+22:37:56:835	                                           from 
+22:37:56:835	                                               sys.extended_properties 
+22:37:56:835	                                           where 
+22:37:56:835	                                               major_id = tbl.object_id and 
+22:37:56:835	                                               minor_id = 0 and 
+22:37:56:835	                                               class = 1 and 
+22:37:56:835	                                               name = N'microsoft_database_tools_support') 
+22:37:56:835	                                           is not null then 1
+22:37:56:835	                                       else 0
+22:37:56:835	                                   end          
+22:37:56:835	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=2 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)
+22:37:56:835	
+22:37:56:883	[2025-11-28T22:37:56.8240658+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0]
+22:37:56:904	[2025-11-28T22:37:56.9045521+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='master']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0] 
+
+22:37:56:904	                                   Elapsed time:79,1246 ms 
+
+22:37:56:904	                                   Query: SELECT
+22:37:56:904	                                   tbl.name AS [Name],
+22:37:56:904	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:37:56:904	                                   'Server[@Name=' + quotename(CAST(
+22:37:56:904	                                           serverproperty(N'Servername')
+22:37:56:904	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:37:56:904	                                   tbl.create_date AS [CreateDate],
+22:37:56:904	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:37:56:904	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:37:56:904	                                   CAST(ISNULL(tbl.ledger_type, 0) AS int) AS [LedgerType],
+22:37:56:904	                                   CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit) AS [IsDroppedLedgerTable],
+22:37:56:904	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:37:56:904	                                   CAST(
+22:37:56:904	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:37:56:904	                                           WHERE object_id = tbl.object_id
+22:37:56:904	                                           AND is_sparse = 1), 0)
+22:37:56:904	                                          AS bit) AS [HasSparseColumn],
+22:37:56:904	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:37:56:904	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:37:56:904	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:37:56:904	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:37:56:904	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:37:56:904	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:37:56:904	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:37:56:904	                                   FROM
+22:37:56:904	                                   sys.tables AS tbl
+22:37:56:904	                                   INNER JOIN sys.indexes AS idx ON 
+22:37:56:904	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:37:56:904	                                         
+22:37:56:904	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:37:56:904	                                   WHERE
+22:37:56:904	                                   (CAST(
+22:37:56:904	                                    case 
+22:37:56:904	                                       when tbl.is_ms_shipped = 1 then 1
+22:37:56:904	                                       when (
+22:37:56:904	                                           select 
+22:37:56:904	                                               major_id 
+22:37:56:904	                                           from 
+22:37:56:904	                                               sys.extended_properties 
+22:37:56:904	                                           where 
+22:37:56:904	                                               major_id = tbl.object_id and 
+22:37:56:904	                                               minor_id = 0 and 
+22:37:56:904	                                               class = 1 and 
+22:37:56:904	                                               name = N'microsoft_database_tools_support') 
+22:37:56:904	                                           is not null then 1
+22:37:56:904	                                       else 0
+22:37:56:904	                                   end          
+22:37:56:904	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=3 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)
+22:37:56:904	
+22:38:03:661	[2025-11-28T22:38:03.6494681+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0]
+22:38:14:416	[2025-11-28T22:38:14.3196389+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 0 and @IsExternal = 0 and @IsNode = 0 and @IsEdge = 0 and @LedgerType = 0] 
+
+22:38:14:416	                                   Elapsed time:10668,3574 ms 
+
+22:38:14:416	                                   Query: SELECT
+22:38:14:416	                                   tbl.name AS [Name],
+22:38:14:416	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:38:14:416	                                   'Server[@Name=' + quotename(CAST(
+22:38:14:416	                                           serverproperty(N'Servername')
+22:38:14:416	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:38:14:416	                                   tbl.create_date AS [CreateDate],
+22:38:14:416	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:38:14:416	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:38:14:416	                                   CAST(0 AS bit) AS [RemoteDataArchiveEnabled],
+22:38:14:416	                                   tbl.temporal_type AS [TemporalType],
+22:38:14:416	                                   CAST(ISNULL(tbl.ledger_type, 0) AS int) AS [LedgerType],
+22:38:14:416	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:38:14:416	                                   CAST(
+22:38:14:416	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:38:14:416	                                           WHERE object_id = tbl.object_id
+22:38:14:416	                                           AND is_sparse = 1), 0)
+22:38:14:416	                                          AS bit) AS [HasSparseColumn],
+22:38:14:416	                                   CAST(tbl.is_node AS bit) AS [IsNode],
+22:38:14:416	                                   CAST(tbl.is_edge AS bit) AS [IsEdge],
+22:38:14:416	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:38:14:416	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:38:14:416	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:38:14:416	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:38:14:416	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:38:14:416	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:38:14:416	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:38:14:416	                                   FROM
+22:38:14:416	                                   sys.tables AS tbl
+22:38:14:416	                                   INNER JOIN sys.indexes AS idx ON 
+22:38:14:416	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:38:14:416	                                         
+22:38:14:416	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:38:14:416	                                   WHERE
+22:38:14:416	                                   (CAST(
+22:38:14:416	                                    case 
+22:38:14:416	                                       when tbl.is_ms_shipped = 1 then 1
+22:38:14:416	                                       when (
+22:38:14:416	                                           select 
+22:38:14:416	                                               major_id 
+22:38:14:416	                                           from 
+22:38:14:416	                                               sys.extended_properties 
+22:38:14:416	                                           where 
+22:38:14:416	                                               major_id = tbl.object_id and 
+22:38:14:416	                                               minor_id = 0 and 
+22:38:14:416	                                               class = 1 and 
+22:38:14:416	                                               name = N'microsoft_database_tools_support') 
+22:38:14:416	                                           is not null then 1
+22:38:14:416	                                       else 0
+22:38:14:416	                                   end          
+22:38:14:416	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0 and CAST(tbl.is_node AS bit)=0 and CAST(tbl.is_edge AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)and(tbl.name not like '#%')
+22:38:14:416	
+22:38:14:480	[2025-11-28T22:38:14.3703974+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0]
+22:38:27:628	[2025-11-28T22:38:26.9618821+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 0 and @TemporalType = 2 and @IsExternal = 0 and @LedgerType = 0] 
+
+22:38:27:628	                                   Elapsed time:12588,7211 ms 
+
+22:38:27:628	                                   Query: SELECT
+22:38:27:628	                                   tbl.name AS [Name],
+22:38:27:628	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:38:27:628	                                   'Server[@Name=' + quotename(CAST(
+22:38:27:628	                                           serverproperty(N'Servername')
+22:38:27:628	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:38:27:628	                                   tbl.create_date AS [CreateDate],
+22:38:27:628	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:38:27:628	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:38:27:628	                                   CAST(ISNULL(historyTable.object_id, 0) AS int) AS [HistoryTableID],
+22:38:27:628	                                   CAST(ISNULL(historyTable.name, N'') AS sysname) AS [HistoryTableName],
+22:38:27:628	                                   CAST(ISNULL(SCHEMA_NAME(historyTable.schema_id), N'') AS sysname) AS [HistoryTableSchema],
+22:38:27:628	                                   tbl.temporal_type AS [TemporalType],
+22:38:27:628	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:38:27:628	                                   CAST(
+22:38:27:628	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:38:27:628	                                           WHERE object_id = tbl.object_id
+22:38:27:628	                                           AND is_sparse = 1), 0)
+22:38:27:628	                                          AS bit) AS [HasSparseColumn],
+22:38:27:628	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:38:27:628	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:38:27:628	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:38:27:628	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:38:27:628	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:38:27:628	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:38:27:628	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:38:27:628	                                   FROM
+22:38:27:628	                                   sys.tables AS tbl
+22:38:27:628	                                   INNER JOIN sys.indexes AS idx ON 
+22:38:27:628	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:38:27:628	                                         
+22:38:27:628	                                   LEFT OUTER JOIN sys.tables as historyTable ON historyTable.object_id = tbl.history_table_id
+22:38:27:628	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:38:27:628	                                   WHERE
+22:38:27:628	                                   (CAST(
+22:38:27:628	                                    case 
+22:38:27:628	                                       when tbl.is_ms_shipped = 1 then 1
+22:38:27:628	                                       when (
+22:38:27:628	                                           select 
+22:38:27:628	                                               major_id 
+22:38:27:628	                                           from 
+22:38:27:628	                                               sys.extended_properties 
+22:38:27:628	                                           where 
+22:38:27:628	                                               major_id = tbl.object_id and 
+22:38:27:628	                                               minor_id = 0 and 
+22:38:27:628	                                               class = 1 and 
+22:38:27:628	                                               name = N'microsoft_database_tools_support') 
+22:38:27:628	                                           is not null then 1
+22:38:27:628	                                       else 0
+22:38:27:628	                                   end          
+22:38:27:628	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=0 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=0)and(tbl.name not like '#%')
+22:38:27:628	
+22:38:27:677	[2025-11-28T22:38:27.0145824+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0]
+22:38:36:697	[2025-11-28T22:38:36.5877817+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 2 and @IsExternal = 0] 
+
+22:38:36:697	                                   Elapsed time:9570,3126 ms 
+
+22:38:36:697	                                   Query: SELECT
+22:38:36:697	                                   tbl.name AS [Name],
+22:38:36:697	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:38:36:697	                                   'Server[@Name=' + quotename(CAST(
+22:38:36:697	                                           serverproperty(N'Servername')
+22:38:36:697	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:38:36:697	                                   tbl.create_date AS [CreateDate],
+22:38:36:697	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:38:36:697	                                   case when (tbl.durability=1) then 0 else 1 end AS [Durability],
+22:38:36:697	                                   CAST(ISNULL(historyTable.object_id, 0) AS int) AS [HistoryTableID],
+22:38:36:697	                                   CAST(ISNULL(historyTable.name, N'') AS sysname) AS [HistoryTableName],
+22:38:36:697	                                   CAST(ISNULL(SCHEMA_NAME(historyTable.schema_id), N'') AS sysname) AS [HistoryTableSchema],
+22:38:36:697	                                   tbl.temporal_type AS [TemporalType],
+22:38:36:697	                                   CAST(0 AS bit) AS [RemoteDataArchiveEnabled],
+22:38:36:697	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:38:36:697	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:38:36:697	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:38:36:697	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:38:36:697	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:38:36:697	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:38:36:697	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:38:36:697	                                   FROM
+22:38:36:697	                                   sys.tables AS tbl
+22:38:36:697	                                   LEFT OUTER JOIN sys.tables as historyTable ON historyTable.object_id = tbl.history_table_id
+22:38:36:697	                                   INNER JOIN sys.indexes AS idx ON 
+22:38:36:697	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:38:36:697	                                         
+22:38:36:697	                                   WHERE
+22:38:36:697	                                   (CAST(
+22:38:36:697	                                    case 
+22:38:36:697	                                       when tbl.is_ms_shipped = 1 then 1
+22:38:36:697	                                       when (
+22:38:36:697	                                           select 
+22:38:36:697	                                               major_id 
+22:38:36:697	                                           from 
+22:38:36:697	                                               sys.extended_properties 
+22:38:36:697	                                           where 
+22:38:36:697	                                               major_id = tbl.object_id and 
+22:38:36:697	                                               minor_id = 0 and 
+22:38:36:697	                                               class = 1 and 
+22:38:36:697	                                               name = N'microsoft_database_tools_support') 
+22:38:36:697	                                           is not null then 1
+22:38:36:697	                                       else 0
+22:38:36:697	                                   end          
+22:38:36:697	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=2 and CAST(tbl.is_external AS bit)=0)and(tbl.name not like '#%')
+22:38:36:697	
+22:38:36:698	[2025-11-28T22:38:36.6365625+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0]
+22:38:44:268	[2025-11-28T22:38:44.2674706+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @IsFileTable = 0 and @IsMemoryOptimized = 1 and @TemporalType = 0 and @IsExternal = 0] 
+
+22:38:44:268	                                   Elapsed time:7629,4418 ms 
+
+22:38:44:268	                                   Query: SELECT
+22:38:44:268	                                   tbl.name AS [Name],
+22:38:44:268	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:38:44:268	                                   'Server[@Name=' + quotename(CAST(
+22:38:44:268	                                           serverproperty(N'Servername')
+22:38:44:268	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:38:44:268	                                   tbl.create_date AS [CreateDate],
+22:38:44:268	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:38:44:268	                                   case when (tbl.durability=1) then 0 else 1 end AS [Durability],
+22:38:44:268	                                   tbl.temporal_type AS [TemporalType],
+22:38:44:268	                                   CAST(0 AS bit) AS [RemoteDataArchiveEnabled],
+22:38:44:268	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:38:44:268	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:38:44:268	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:38:44:268	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:38:44:268	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:38:44:268	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:38:44:268	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:38:44:268	                                   FROM
+22:38:44:268	                                   sys.tables AS tbl
+22:38:44:268	                                   INNER JOIN sys.indexes AS idx ON 
+22:38:44:268	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:38:44:268	                                         
+22:38:44:268	                                   WHERE
+22:38:44:268	                                   (CAST(
+22:38:44:268	                                    case 
+22:38:44:268	                                       when tbl.is_ms_shipped = 1 then 1
+22:38:44:268	                                       when (
+22:38:44:268	                                           select 
+22:38:44:268	                                               major_id 
+22:38:44:268	                                           from 
+22:38:44:268	                                               sys.extended_properties 
+22:38:44:268	                                           where 
+22:38:44:268	                                               major_id = tbl.object_id and 
+22:38:44:268	                                               minor_id = 0 and 
+22:38:44:268	                                               class = 1 and 
+22:38:44:268	                                               name = N'microsoft_database_tools_support') 
+22:38:44:268	                                           is not null then 1
+22:38:44:268	                                       else 0
+22:38:44:268	                                   end          
+22:38:44:268	                                                AS bit)=0 and tbl.is_filetable=0 and CAST(tbl.is_memory_optimized AS bit)=1 and tbl.temporal_type=0 and CAST(tbl.is_external AS bit)=0)and(tbl.name not like '#%')
+22:38:44:268	
+22:38:44:417	[2025-11-28T22:38:44.3929165+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0]
+22:38:56:451	[2025-11-28T22:38:56.3503243+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 2 and @IsDroppedLedgerTable = 0] 
+
+22:38:56:451	                                   Elapsed time:11955,9072 ms 
+
+22:38:56:451	                                   Query: SELECT
+22:38:56:451	                                   tbl.name AS [Name],
+22:38:56:451	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:38:56:451	                                   'Server[@Name=' + quotename(CAST(
+22:38:56:451	                                           serverproperty(N'Servername')
+22:38:56:451	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:38:56:451	                                   tbl.create_date AS [CreateDate],
+22:38:56:451	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:38:56:451	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:38:56:451	                                   CAST(ISNULL(historyTable.object_id, 0) AS int) AS [HistoryTableID],
+22:38:56:451	                                   CAST(ISNULL(historyTable.name, N'') AS sysname) AS [HistoryTableName],
+22:38:56:451	                                   CAST(ISNULL(SCHEMA_NAME(historyTable.schema_id), N'') AS sysname) AS [HistoryTableSchema],
+22:38:56:451	                                   tbl.temporal_type AS [TemporalType],
+22:38:56:451	                                   CAST(ISNULL(tbl.ledger_type, 0) AS int) AS [LedgerType],
+22:38:56:451	                                   CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit) AS [IsDroppedLedgerTable],
+22:38:56:451	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:38:56:451	                                   CAST(
+22:38:56:451	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:38:56:451	                                           WHERE object_id = tbl.object_id
+22:38:56:451	                                           AND is_sparse = 1), 0)
+22:38:56:451	                                          AS bit) AS [HasSparseColumn],
+22:38:56:451	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:38:56:451	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:38:56:451	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:38:56:451	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:38:56:451	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:38:56:451	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:38:56:451	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:38:56:451	                                   FROM
+22:38:56:451	                                   sys.tables AS tbl
+22:38:56:451	                                   INNER JOIN sys.indexes AS idx ON 
+22:38:56:451	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:38:56:451	                                         
+22:38:56:451	                                   LEFT OUTER JOIN sys.tables as historyTable ON historyTable.object_id = tbl.history_table_id
+22:38:56:451	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:38:56:451	                                   WHERE
+22:38:56:451	                                   (CAST(
+22:38:56:451	                                    case 
+22:38:56:451	                                       when tbl.is_ms_shipped = 1 then 1
+22:38:56:451	                                       when (
+22:38:56:451	                                           select 
+22:38:56:451	                                               major_id 
+22:38:56:451	                                           from 
+22:38:56:451	                                               sys.extended_properties 
+22:38:56:451	                                           where 
+22:38:56:451	                                               major_id = tbl.object_id and 
+22:38:56:451	                                               minor_id = 0 and 
+22:38:56:451	                                               class = 1 and 
+22:38:56:451	                                               name = N'microsoft_database_tools_support') 
+22:38:56:451	                                           is not null then 1
+22:38:56:451	                                       else 0
+22:38:56:451	                                   end          
+22:38:56:451	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=2 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)and(tbl.name not like '#%')
+22:38:56:451	
+22:38:56:465	[2025-11-28T22:38:56.3972810+03:00 Begin Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0]
+22:39:07:309	[2025-11-28T22:39:07.3083065+03:00 End Query] URN:Server[@Name='SEIRAI\CATHARSIS']/Database[@Name='tempdb']/Table[@IsSystemObject = 0 and @LedgerType = 3 and @IsDroppedLedgerTable = 0] 
+
+22:39:07:309	                                   Elapsed time:10909,3655 ms 
+
+22:39:07:309	                                   Query: SELECT
+22:39:07:309	                                   tbl.name AS [Name],
+22:39:07:309	                                   SCHEMA_NAME(tbl.schema_id) AS [Schema],
+22:39:07:309	                                   'Server[@Name=' + quotename(CAST(
+22:39:07:309	                                           serverproperty(N'Servername')
+22:39:07:309	                                          AS sysname),'''') + ']' + '/Database[@Name=' + quotename(db_name(),'''') + ']' + '/Table[@Name=' + quotename(tbl.name,'''') + ' and @Schema=' + quotename(SCHEMA_NAME(tbl.schema_id),'''') + ']' AS [Urn],
+22:39:07:309	                                   tbl.create_date AS [CreateDate],
+22:39:07:309	                                   CAST(tbl.is_memory_optimized AS bit) AS [IsMemoryOptimized],
+22:39:07:309	                                   CAST(CASE idx.type WHEN 5 THEN 1 ELSE 0 END AS bit) AS [HasClusteredColumnStoreIndex],
+22:39:07:309	                                   CAST(ISNULL(tbl.ledger_type, 0) AS int) AS [LedgerType],
+22:39:07:309	                                   CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit) AS [IsDroppedLedgerTable],
+22:39:07:309	                                   CAST(CASE WHEN 'PS'=dsidx.type THEN 1 ELSE 0 END AS bit) AS [IsPartitioned],
+22:39:07:309	                                   CAST(
+22:39:07:309	                                           ISNULL((SELECT distinct 1 from sys.all_columns
+22:39:07:309	                                           WHERE object_id = tbl.object_id
+22:39:07:309	                                           AND is_sparse = 1), 0)
+22:39:07:309	                                          AS bit) AS [HasSparseColumn],
+22:39:07:309	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type > 1 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredIndex],
+22:39:07:309	                                   CAST(CASE idx.index_id WHEN 1 THEN 1 ELSE 0 END AS bit) AS [HasClusteredIndex],
+22:39:07:309	                                   CAST(case idx.index_id when 1 then case when (idx.is_primary_key + 2*idx.is_unique_constraint = 1) then 1 else 0 end else 0 end AS bit) AS [HasPrimaryClusteredIndex],
+22:39:07:309	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 3 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasXmlIndex],
+22:39:07:309	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name = N'xml'), 0) AS bit) AS [HasXmlData],
+22:39:07:309	                                   CAST(ISNULL((select top 1 1 from sys.all_columns as clmns join sys.types as usrt on usrt.user_type_id = clmns.user_type_id where clmns.object_id = tbl.object_id and usrt.name in (N'geometry', N'geography')), 0) AS bit) AS [HasSpatialData],
+22:39:07:309	                                   CAST(ISNULL((select top 1 1 from sys.indexes ind where ind.object_id = tbl.object_id and ind.type = 6 and ind.is_hypothetical = 0 ), 0) AS bit) AS [HasNonClusteredColumnStoreIndex]
+22:39:07:309	                                   FROM
+22:39:07:309	                                   sys.tables AS tbl
+22:39:07:309	                                   INNER JOIN sys.indexes AS idx ON 
+22:39:07:309	                                           idx.object_id = tbl.object_id and (idx.index_id < 2  or (tbl.is_memory_optimized = 1 and idx.index_id = (select min(index_id) from sys.indexes where object_id = tbl.object_id)))
+22:39:07:309	                                         
+22:39:07:309	                                   LEFT OUTER JOIN sys.data_spaces AS dsidx ON dsidx.data_space_id = idx.data_space_id
+22:39:07:309	                                   WHERE
+22:39:07:309	                                   (CAST(
+22:39:07:309	                                    case 
+22:39:07:309	                                       when tbl.is_ms_shipped = 1 then 1
+22:39:07:309	                                       when (
+22:39:07:309	                                           select 
+22:39:07:309	                                               major_id 
+22:39:07:309	                                           from 
+22:39:07:309	                                               sys.extended_properties 
+22:39:07:309	                                           where 
+22:39:07:309	                                               major_id = tbl.object_id and 
+22:39:07:309	                                               minor_id = 0 and 
+22:39:07:309	                                               class = 1 and 
+22:39:07:309	                                               name = N'microsoft_database_tools_support') 
+22:39:07:309	                                           is not null then 1
+22:39:07:309	                                       else 0
+22:39:07:309	                                   end          
+22:39:07:309	                                                AS bit)=0 and CAST(ISNULL(tbl.ledger_type, 0) AS int)=3 and CAST(ISNULL(tbl.is_dropped_ledger_table, 0) AS bit)=0)and(tbl.name not like '#%')
+22:39:07:309	
